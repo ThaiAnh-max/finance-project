@@ -12,6 +12,7 @@ import './App.css';
 import HomePage from './pages/home/HomePage';
 import FinanceChartPage from './pages/chart/FinanceChartPage';
 import MainLayout from './layouts/MainLayout';
+import PortfolioManagement from './pages/portfolio-management/PortfolioManagement';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
     <Switch>
       <Route path="/home" component={HomePage} />
       <Route path="/chart" component={FinanceChartPage} />
+      <Route path="/portfolio-management" component={PortfolioManagement} />
       <Redirect to="/home" />
     </Switch>
   );

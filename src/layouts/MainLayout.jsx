@@ -81,7 +81,7 @@ export default class extends React.Component {
 
   renderBody() {
     return (
-      <MDBContainer className="main-container flex-fill text-center m-0 p-0" fluid>
+      <MDBContainer className="main-container flex-fill m-0 p-0" fluid>
         {this.props.routes}
       </MDBContainer>
     );
