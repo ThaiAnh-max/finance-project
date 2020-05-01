@@ -1,9 +1,22 @@
+/* eslint-disable no-loop-func */
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 import './PortfolioChart.css';
 import parseCSV from './parseCSV';
-import financeData from './data';
 
+
+function giaiPTBac2(a, b, c) {
+  const delta = (b * b - 4 * a * c);
+  if (delta === 0) {
+    return -b / (2 * a);
+  }
+  if (delta < 0) {
+    return 0;
+  }
+  const x1 = (-b - Math.sqrt(delta)) / (2 * a);
+  const x2 = (-b + Math.sqrt(delta)) / (2 * a);
+  return Math.max(x1, x2);
+}
 
 export default class extends React.Component {
   get chart() {
@@ -97,45 +110,65 @@ export default class extends React.Component {
     };
   }
 
-  componentDidMount() {
-    fetch('/data.csv').then(async (res) => {
-      const csvContent = await res.text();
-      this.updateChart(csvContent);
-    }).catch(() => {
-      this.updateChart(financeData);
-    });
-  }
-
   updateChart(csvContent) {
     const csv = parseCSV(csvContent);
     console.log(csv);
 
     // ["w", "mean12", "std12", "mean13", "std13", "mean23", "std23"]
+    const headerRow = csv[0];
     const rows = csv.slice(1);
 
-    const mean12 = rows.map((row) => +row[1]);
-    const std12 = rows.map((row) => +row[2]);
-    const serie12 = mean12.map((m12, index) => [m12, std12[index]]);
+    const k = 2;
+    const Ckn = (headerRow.length - 1) / 2;
+    const numAssets = giaiPTBac2(1, -1, -Ckn * k);
 
-    const mean13 = rows.map((row) => +row[3]);
-    const std13 = rows.map((row) => +row[4]);
-    const serie13 = mean13.map((m13, index) => [m13, std13[index]]);
+    const portfolioes = [];
+    let counter = 1;
+    for (let i = 0; i < numAssets; i++) {
+      for (let j = i + 1; j < numAssets; j++) {
+        const mean = rows.map((row) => +row[counter]);
+        const std = rows.map((row) => +row[counter + 1]);
+        const serie = mean.map((m, index) => [m, std[index]]);
+        portfolioes.push({
+          name: `portfolio-${i + 1}${j + 1}`,
+          data: serie
+        });
+        counter += 2;
+      }
+    }
 
-    const mean23 = rows.map((row) => +row[5]);
-    const std23 = rows.map((row) => +row[6]);
-    const serie23 = mean23.map((m23, index) => [m23, std23[index]]);
+    function sameFloat(a, b, precision = 6) {
+      return Math.abs(a - b) < 10 ** -precision;
+    }
+    const assets = [];
+    for (let i = 0; i < numAssets; i++) {
+      for (let j = i + 1; j < numAssets; j++) {
+        const lineA = portfolioes[i];
+        const lineB = portfolioes[j];
+        const intersection = lineA.data.find(
+          (A) => lineB.data.find(
+            (B) => sameFloat(A[0], B[0]) && sameFloat(A[1], B[1])
+          )
+        );
+        if (intersection) {
+          assets.push(intersection);
+        }
+      }
+    }
 
-    const asserts = [
-      [20, 4],
-      [22, 5],
-      [24, 4]
-    ];
-
+    const numPortfolioes = portfolioes.length;
+    this.chart.updateOptions({
+      stroke: {
+        curve: 'smooth',
+        width: new Array(numPortfolioes + 1).fill(2)
+      },
+      markers: {
+        size: [...new Array(numPortfolioes).fill(0), 6]
+      }
+    });
     this.chart.updateSeries([
-      { name: 'portfilios12', data: serie12 },
-      { name: 'portfilios13', data: serie13 },
-      { name: 'portfilios23', data: serie23 },
-      { name: 'Assets', data: asserts }
+      ...portfolioes,
+      { name: 'Assets', data: assets }
     ]);
   }
 
