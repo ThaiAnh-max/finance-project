@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { Row, Col } from 'mdbreact';
 import MyFinanceChart from '../../components/charts/MyFinanceChart';
-import DateTimePicker from '../../components/datetime-picker/DateTimePicker';
 import parseCSV from './parseCSV';
 import finance from './finance';
 import CompanySelect from '../../components/company-select/CompanySelect';
+import DateTimePicker from '../../components/datetime-picker/DateTimePicker';
 
 
 export default class extends Component {
@@ -16,15 +16,36 @@ export default class extends Component {
   constructor(props) {
     super(props);
     this.chartRef = React.createRef();
+    this.handleCompanyChange = this.handleCompanyChange.bind(this);
     this.handleDateRangeChange = this.handleDateRangeChange.bind(this);
     this.state = {
-      start: '',
-      end: ''
+      company: '',
+      start: '2019/1/1',
+      end: '2019/5/1'
     };
   }
 
-  handleDateRangeChange(start, end) {
-    fetch('/finance.csv').then(async (res) => {
+  handleDateRangeChange(startRange, endRange) {
+    this.setState({
+      start: startRange,
+      end: endRange
+    }, () => {
+      const { company, start, end } = this.state;
+      this.fetchChartData({ company, start, end });
+    });
+  }
+
+  handleCompanyChange(selectedCompany) {
+    this.setState({
+      company: selectedCompany.value
+    }, () => {
+      const { company, start, end } = this.state;
+      this.fetchChartData({ company, start, end });
+    });
+  }
+
+  fetchChartData({ company, start, end }) {
+    fetch(`/${company}.csv`).then(async (res) => {
       const csvContent = await res.text();
       this.updateChart(csvContent, start, end);
     }).catch(() => {
@@ -50,15 +71,23 @@ export default class extends Component {
   }
 
   render() {
+    const { start, end } = this.state;
     return (
       <div className="">
         <div>
           <Row>
             <Col>
-              <CompanySelect className="m-3" />
+              <CompanySelect
+                className="m-3"
+                onChange={this.handleCompanyChange}
+              />
             </Col>
             <Col>
-              <DateTimePicker onChange={this.handleDateRangeChange} />
+              <DateTimePicker
+                start={start}
+                end={end}
+                onChange={this.handleDateRangeChange}
+              />
             </Col>
           </Row>
           <MyFinanceChart ref={this.chartRef} />

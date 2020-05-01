@@ -11,10 +11,8 @@ import DateTimeRangeContainer from 'react-advanced-datetimerange-picker';
 export default class extends React.Component {
   constructor(props) {
     super(props);
-    const start = moment(new Date(2019, 3, 31, 0, 0, 0, 0));
-    const end = moment(start)
-      .add(5, 'days')
-      .subtract(1, 'second');
+    const start = moment(props.start);
+    const end = moment(props.end);
     this.state = {
       start,
       end
@@ -64,7 +62,7 @@ export default class extends React.Component {
           start={this.state.start}
           end={this.state.end}
           local={local}
-          maxDate={maxDate}
+          // maxDate={maxDate}
           applyCallback={this.applyCallback}
           rangeCallback={this.rangeCallback}
           autoApply
