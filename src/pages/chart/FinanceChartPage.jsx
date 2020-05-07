@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import { Row, Col } from 'mdbreact';
+import unirest from 'unirest';
 import MyFinanceChart from '../../components/charts/MyFinanceChart';
 import parseCSV from './parseCSV';
 import finance from './finance';
@@ -31,7 +32,7 @@ export default class extends Component {
       end: endRange
     }, () => {
       const { company, start, end } = this.state;
-      this.fetchChartData({ company, start, end });
+      this.fetchOnlineData({ company, start, end });
     });
   }
 
@@ -40,8 +41,46 @@ export default class extends Component {
       company: selectedCompany.value
     }, () => {
       const { company, start, end } = this.state;
-      this.fetchChartData({ company, start, end });
+      this.fetchOnlineData({ company, start, end });
     });
+  }
+
+  fetchOnlineData({ company, start, end }) {
+    const req = unirest('GET', 'https://finnhub-realtime-stock-price.p.rapidapi.com/stock/candle');
+
+    console.log(start, end);
+    req.query({
+      symbol: company,
+      from: new Date(start).getTime() / 1000,
+      to: new Date(end).getTime() / 1000,
+      resolution: 'D'
+    });
+
+    req.headers({
+      'x-rapidapi-host': 'finnhub-realtime-stock-price.p.rapidapi.com',
+      'x-rapidapi-key': '0a318ccda9msh792e8197f2e749ep1a08cejsn8cf53592ba40'
+    });
+
+
+    req.end((res) => {
+      if (res.error) {
+        return;
+      }
+
+      const data = this.resolveOnlineData(res.body);
+      this.updateChart(data);
+    });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  resolveOnlineData(data) {
+    const {
+      t: times, o: open, h: high, l: low, c: close
+    } = data;
+    return times.map((time, i) => ({
+      x: new Date(time),
+      y: [open[i], high[i], low[i], close[i]]
+    }));
   }
 
   fetchChartData({ company, start, end }) {
@@ -53,7 +92,7 @@ export default class extends Component {
     });
   }
 
-  updateChart(csvContent, start, end) {
+  resolveLocalData(csvContent, start, end) {
     const csv = parseCSV(csvContent);
     console.log(csv);
 
@@ -65,6 +104,10 @@ export default class extends Component {
     }))
       .filter((row) => moment(row.x).isBetween(start, end));
 
+    this.updateChart(data);
+  }
+
+  updateChart(data) {
     this.chartComponent.chart.updateSeries([
       { name: '', data }
     ]);
