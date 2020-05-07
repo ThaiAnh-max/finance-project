@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import {
   Row, Col
 } from 'mdbreact';
+import superagent from 'superagent';
 import PortfolioChart from '../../components/charts/portfolio-chart/PortfolioChart';
 import AssetsTable from './AssetsTable';
 import './PortfolioManagement.scss';
@@ -34,6 +35,7 @@ export default class extends Component {
     this.chartRef = React.createRef();
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleAnalyze = this.handleAnalyze.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.state = {
       minW: -0.5,
       maxW: 1.5,
@@ -58,12 +60,25 @@ export default class extends Component {
   }
 
   componentDidMount() {
-    fetch('/data.csv').then(async (res) => {
-      const csvContent = await res.text();
-      this.chart.updateChart(csvContent);
-    }).catch(() => {
-      this.chart.updateChart(financeData);
-    });
+    this.fetchData();
+  }
+
+  fetchData() {
+    const { assets: rawAssets, minW, maxW } = this.state;
+    const assets = rawAssets.filter((asset) => isValidAsset(asset));
+    superagent.get('/data.csv')
+      .query({
+        assets,
+        minW,
+        maxW
+      })
+      .then((rs) => {
+        const csvContent = rs.text;
+        this.chart.updateChart(csvContent);
+      })
+      .catch(() => {
+        this.chart.updateChart(financeData);
+      });
   }
 
   handleInputChange(event) {

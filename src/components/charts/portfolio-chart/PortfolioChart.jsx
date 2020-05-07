@@ -124,7 +124,7 @@ export default class extends React.Component {
 
     const portfolioes = [];
     let counter = 1;
-    for (let i = 0; i < numAssets; i++) {
+    for (let i = 0; i < numAssets - 1; i++) {
       for (let j = i + 1; j < numAssets; j++) {
         const mean = rows.map((row) => +row[counter]);
         const std = rows.map((row) => +row[counter + 1]);
@@ -140,9 +140,10 @@ export default class extends React.Component {
     function sameFloat(a, b, precision = 6) {
       return Math.abs(a - b) < 10 ** -precision;
     }
+    const numLines = portfolioes.length;
     const assets = [];
-    for (let i = 0; i < numAssets; i++) {
-      for (let j = i + 1; j < numAssets; j++) {
+    for (let i = 0; i < numLines - 1; i++) {
+      for (let j = i + 1; j < numLines; j++) {
         const lineA = portfolioes[i];
         const lineB = portfolioes[j];
         const intersection = lineA.data.find(
