@@ -26,6 +26,17 @@ function computeStdev(w, stdevI, stdevJ, covariant) {
   return Math.sqrt((w ** 2 * stdevI ** 2) + (2 * w * (1 - w) * cov) + ((1 - w) ** 2 * stdevJ ** 2));
 }
 
+function countCombination(assets = []) {
+  const numAssets = assets.length;
+  let counter = 0;
+  for (let i = 0; i < numAssets - 1; i++) {
+    for (let j = i + 1; j < numAssets; j++, counter++) {
+      //
+    }
+  }
+  return counter;
+}
+
 export default class extends Component {
   get chart() {
     return this.chartRef.current;
@@ -71,7 +82,7 @@ export default class extends Component {
       .query({
         mean: assets.map((asset) => asset.mean).join(','),
         stdev: assets.map((asset) => asset.stdev).join(','),
-        corr: corr.join(','),
+        corr: corr.slice(0, countCombination(assets)).join(','),
         minW,
         maxW
       })

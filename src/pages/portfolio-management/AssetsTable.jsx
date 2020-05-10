@@ -14,6 +14,7 @@ export default class extends Component {
     super(props);
     this.handleAssetsChange = this.handleAssetsChange.bind(this);
     this.handleRemoveAsset = this.handleRemoveAsset.bind(this);
+    this.emitOnChangeEvent = this.emitOnChangeEvent.bind(this);
     const assets = props.value || [
       {
         mean: 0,
@@ -28,6 +29,17 @@ export default class extends Component {
     this.state = {
       assets
     };
+  }
+
+  emitOnChangeEvent() {
+    if (this.props.onChange) {
+      this.props.onChange({
+        target: {
+          name: this.props.name,
+          value: this.state.assets
+        }
+      });
+    }
   }
 
   handleAssetsChange(event) {
@@ -46,14 +58,7 @@ export default class extends Component {
           : assets
       };
     }, () => {
-      if (this.props.onChange) {
-        this.props.onChange({
-          target: {
-            name: this.props.name,
-            value: this.state.assets
-          }
-        });
-      }
+      this.emitOnChangeEvent();
     });
   }
 
@@ -70,6 +75,8 @@ export default class extends Component {
       return {
         assets
       };
+    }, () => {
+      this.emitOnChangeEvent();
     });
   }
 
