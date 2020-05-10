@@ -1,4 +1,7 @@
 export default function parseCSV(str = '', useHeader = true) {
+  if (Array.isArray(str)) {
+    return str;
+  }
   const arr = [];
   let quote = false;
   // str = str.replace(/;;/g, ';');

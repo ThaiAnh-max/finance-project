@@ -6,7 +6,7 @@ import {
 
 
 function isValidAsset(asset) {
-  return asset.mean != null && asset.stdev != null && asset.corr != null;
+  return asset.mean != null && asset.stdev != null;
 }
 
 export default class extends Component {
@@ -17,12 +17,10 @@ export default class extends Component {
     const assets = props.value || [
       {
         mean: 0,
-        stdev: 0,
-        corr: 0
+        stdev: 0
       }, {
         mean: 0,
-        stdev: 0,
-        corr: 0
+        stdev: 0
       }, {
 
       }
@@ -99,7 +97,7 @@ export default class extends Component {
           <tr>
             <th> </th>
             {assets.map((asset, index) => (
-              <th key={index} className="text-center">
+              <th key={index} className="">
                 {isValidAsset(asset)
                   ? (
                     <span>
@@ -134,14 +132,6 @@ export default class extends Component {
             {assets.map(({ stdev, key }, index) => (
               <td key={key || `stdev-${index}`}>
                 {this.renderInput(stdev, 'stdev', index)}
-              </td>
-            ))}
-          </tr>
-          <tr>
-            <td><b>Corr</b></td>
-            {assets.map(({ corr, key }, index) => (
-              <td key={key || `corr-${index}`}>
-                {this.renderInput(corr, 'corr', index)}
               </td>
             ))}
           </tr>

@@ -137,7 +137,7 @@ export default class extends React.Component {
       }
     }
 
-    function sameFloat(a, b, precision = 6) {
+    function sameFloat(a, b, precision = 8) {
       return Math.abs(a - b) < 10 ** -precision;
     }
     const numLines = portfolioes.length;
