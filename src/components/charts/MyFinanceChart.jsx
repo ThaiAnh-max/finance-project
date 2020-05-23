@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
-import './MyFinanceChart.css';
+import './MyFinanceChart.scss';
 
 
 export default class extends React.Component {

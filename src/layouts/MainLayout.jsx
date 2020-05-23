@@ -6,6 +6,7 @@ import {
   MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBContainer, MDBView, MDBMask, MDBDropdownToggle, MDBDropdown, MDBDropdownMenu, MDBDropdownItem
 } from 'mdbreact';
 import './MainLayout.scss';
+import RouteConstants from '../utils/RouteConstants';
 
 
 export default class extends React.Component {
@@ -45,9 +46,9 @@ export default class extends React.Component {
                       <div className="d-none d-md-inline">Equity</div>
                     </MDBDropdownToggle>
                     <MDBDropdownMenu left>
-                      <MDBDropdownItem href="/chart">Stock charts</MDBDropdownItem>
-                      <MDBDropdownItem href="#!">Financial reports</MDBDropdownItem>
-                      <MDBDropdownItem href="#!">GGM</MDBDropdownItem>
+                      <MDBDropdownItem href={RouteConstants.stockCharts}>Stock charts</MDBDropdownItem>
+                      <MDBDropdownItem href={RouteConstants.financeReports}>Financial reports</MDBDropdownItem>
+                      <MDBDropdownItem href={RouteConstants.ggm}>GGM</MDBDropdownItem>
                     </MDBDropdownMenu>
                   </MDBDropdown>
                 </MDBNavItem>

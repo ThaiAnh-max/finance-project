@@ -13,14 +13,17 @@ import HomePage from './pages/home/HomePage';
 import FinanceChartPage from './pages/chart/FinanceChartPage';
 import MainLayout from './layouts/MainLayout';
 import PortfolioManagement from './pages/portfolio-management/PortfolioManagement';
+import GGM from './pages/GGM/GGM';
+import RouteConstants from './utils/RouteConstants';
 
 
 function App() {
   const routes = (
     <Switch>
       <Route path="/home" component={HomePage} />
-      <Route path="/chart" component={FinanceChartPage} />
       <Route path="/portfolio-management" component={PortfolioManagement} />
+      <Route path={RouteConstants.stockCharts} component={FinanceChartPage} />
+      <Route path={RouteConstants.ggm} component={GGM} />
       <Redirect to="/home" />
     </Switch>
   );

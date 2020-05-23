@@ -58,7 +58,8 @@ export default class extends Component {
 
     req.headers({
       'x-rapidapi-host': 'finnhub-realtime-stock-price.p.rapidapi.com',
-      'x-rapidapi-key': '0a318ccda9msh792e8197f2e749ep1a08cejsn8cf53592ba40'
+      'x-rapidapi-key': 'afa8908cd3mshe6b80263496b934p155993jsn9a2c2f3bbe0d',
+      useQueryString: true
     });
 
 
