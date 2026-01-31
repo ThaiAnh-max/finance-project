@@ -8,7 +8,7 @@
     "@testing-library/user-event": "^7.2.1",
     "apexcharts": "^3.16.1",
     "csv-parser": "^2.3.2",
-    "eslint": "^6.8.0",
+    "eslint": "^9.26.0",
     "eslint-config-airbnb": "^18.1.0",
     "mdbreact": "^4.25.6",
     "node-sass": "^4.14.0",
